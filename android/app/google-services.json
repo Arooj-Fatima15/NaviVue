@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "172746658519",
+    "project_id": "navivue",
+    "storage_bucket": "navivue.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172746658519:android:785e496d5ae14bd587d692",
+        "android_client_info": {
+          "package_name": "com.awesomeprojectnpx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1T280HL_nddnxZ_LtCPk1mzhQRDRy-zE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
