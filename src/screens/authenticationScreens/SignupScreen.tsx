@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Image,
@@ -7,70 +7,42 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-} from "react-native";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // For check/cross icons
-import { SignupScreenProps } from "../../navigation/StackParamList";
+import {SignupScreenProps} from '../../navigation/StackParamList';
 
 const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [usernameError, setUsernameError] = useState('');
-  const [isUsernameValid, setIsUsernameValid] = useState(false);
 
   // Validation for inputs
   const validateInput = () => {
-    if (!email || !password || !confirmPassword || !username) {
-      Alert.alert("Error", "Please fill in all fields.");
+    if (!email || !password || !confirmPassword || !firstName || !lastName) {
+      Alert.alert('Error', 'Please fill in all fields.');
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert("Error", "Please enter a valid email address.");
+      Alert.alert('Error', 'Please enter a valid email address.');
       return false;
     }
     if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters long.");
+      Alert.alert('Error', 'Password must be at least 6 characters long.');
       return false;
     }
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return false;
-    }
-
-    if (!isUsernameValid) {
-      Alert.alert("Error", "Please choose a valid username.");
+      Alert.alert('Error', 'Passwords do not match.');
       return false;
     }
 
     return true;
-  };
-
-  // Function to check if username is already taken
-  const checkUsername = async (enteredUsername: string | any[]) => {
-    if (enteredUsername.length < 3) {
-      setUsernameError('Username must be at least 3 characters.');
-      setIsUsernameValid(false);
-      return;
-    }
-
-    const usernameSnapshot = await firestore()
-      .collection('users')
-      .where('username', '==', enteredUsername)
-      .get();
-
-    if (!usernameSnapshot.empty) {
-      setUsernameError('Username is already taken.');
-      setIsUsernameValid(false);
-    } else {
-      setUsernameError('');
-      setIsUsernameValid(true);
-    }
   };
 
   const handleSignup = async () => {
@@ -79,24 +51,28 @@ const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
     try {
       setLoading(true);
       // Create user with Firebase Authentication
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      const userCredential = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
       const user = userCredential.user;
 
       // Save user data to Firestore
-      await firestore().collection("users").doc(user.uid).set({
-        username: username,
+      await firestore().collection('users').doc(user.uid).set({
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         createdAt: firestore.FieldValue.serverTimestamp(),
       });
 
-      Alert.alert("Success", "Account created successfully!");
-      navigation.navigate("Login"); // Navigate to login screen after successful signup
+      Alert.alert('Success', 'Account created successfully!');
+      navigation.navigate('AddProfileDetails'); // Navigate to login screen after successful signup
     } catch (error) {
-      console.error("Error signing up:", error);
-      if (error.code === "auth/email-already-in-use") {
-        Alert.alert("Error", "That email address is already in use!");
+      console.error('Error signing up:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert('Error', 'That email address is already in use!');
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert('Error', 'Something went wrong. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -109,7 +85,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
         <Image
           style={styles.logo}
           source={{
-            uri: "https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/oode2rx1rcn-187%3A1093?alt=media&token=d9a63407-5f74-4216-846a-0e9167c2e031",
+            uri: 'https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/oode2rx1rcn-187%3A1093?alt=media&token=d9a63407-5f74-4216-846a-0e9167c2e031',
           }}
         />
         <Text style={styles.title}>Sign Up</Text>
@@ -117,24 +93,26 @@ const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
           Create an account by entering your details below
         </Text>
 
-        {/* Username Input with Validation */}
+        {/* First Name Input */}
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder="First Name"
             placeholderTextColor="rgba(153,156,173,1)"
-            value={username}
-            onChangeText={(text) => {
-              setUsername(text);
-             checkUsername(text);
-            }}
+            value={firstName}
+            onChangeText={setFirstName}
           />
-          {usernameError ? (
-            <Icon name="cancel" size={24} color="red" style={styles.icon} />
-          ) : isUsernameValid ? (
-            <Icon name="check-circle" size={24} color="green" style={styles.icon} />
-          ) : null}
-          {usernameError && <Text style={styles.errorText}>{usernameError}</Text>}
+        </View>
+
+        {/* Last Name Input */}
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            placeholderTextColor="rgba(153,156,173,1)"
+            value={lastName}
+            onChangeText={setLastName}
+          />
         </View>
 
         {/* Email Input */}
@@ -176,63 +154,66 @@ const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
 
         {/* Sign Up Button */}
         <TouchableOpacity
-          style={[styles.signupButton , , { width: '100%' }]} 
+          style={[styles.signupButton, , {width: '100%'}]}
           onPress={handleSignup}
-          disabled={loading}
-        >
+          disabled={loading}>
           <Text style={styles.signupButtonText}>
-            {loading ? "Signing Up..." : "Sign Up"}
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </Text>
         </TouchableOpacity>
 
         {/* Login Navigation */}
         <Text style={styles.loginPrompt}>
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Text
             style={styles.loginLink}
-            onPress={() => navigation.navigate("Login")} // Navigate to the Login screen
+            onPress={() => navigation.navigate('Login')} // Navigate to the Login screen
           >
             Sign In
           </Text>
         </Text>
+
+        <Text onPress={() => navigation.navigate('AddProfileDetails')}>
+          Go to Add Information
+        </Text>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: "#FAFAFF",
+    backgroundColor: '#FAFAFF',
   },
   formContainer: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   logo: {
-    width: "100%",
+    width: '100%',
     height: 150,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   title: {
     fontSize: 25,
-    fontWeight: "600",
-    color: "#023880",
+    fontWeight: '600',
+    color: '#023880',
     marginVertical: 10,
   },
   subtitle: {
     fontSize: 12,
-    color: "#afafaf",
-    textAlign: "center",
+    color: '#afafaf',
+    textAlign: 'center',
     marginBottom: 20,
   },
   inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#e8e6ea",
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#e8e6ea',
     borderWidth: 1,
     borderRadius: 15,
     padding: 7,
@@ -240,40 +221,29 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 14,
-    color: "#999cae",
+    color: '#999cae',
     flex: 1,
   },
   signupButton: {
-    backgroundColor: "#023880",
+    backgroundColor: '#023880',
     padding: 15,
     borderRadius: 30,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 20,
   },
   signupButtonText: {
-    color: "#fff",
-    fontWeight: "700",
+    color: '#fff',
+    fontWeight: '700',
   },
   loginPrompt: {
     fontSize: 11,
-    color: "#999cae",
+    color: '#999cae',
     marginTop: 20,
   },
   loginLink: {
-    color: "rgba(2,56,128,1)",
-    fontWeight: "700",
-  },
-  icon: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginTop: 5,
+    color: 'rgba(2,56,128,1)',
+    fontWeight: '700',
   },
 });
-
 
 export default SignupScreen;

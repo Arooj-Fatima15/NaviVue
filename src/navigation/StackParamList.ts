@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/native';
+import {RouteProp} from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
@@ -10,12 +10,13 @@ export type StackParamList = {
   Onboarding: undefined;
   Login: undefined;
   Signup: undefined;
-  Otp: { email: string; otpCode: string; purpose: 'signup' | 'forgotPassword' };
+  Otp: {email: string; otpCode: string; purpose: 'signup' | 'forgotPassword'};
   ForgotPassword: undefined;
   Main: undefined;
   AllowLocation: undefined;
   SettingsScreen: undefined;
   MyProfile: undefined;
+  EditMyProfile: undefined;
   FavoritePlaces: undefined;
   NavigationHistory: undefined;
   HelpCenter: undefined;
@@ -24,17 +25,17 @@ export type StackParamList = {
   Logout: undefined;
   HomeScreen: undefined;
   Profile: undefined;
+  AddProfileDetails: undefined;
 
   // New Screens
   EnterLocation: undefined;
-  LocationUpdate: { latitude: number; longitude: number }
+  LocationUpdate: {latitude: number; longitude: number};
   AllowBluetooth: undefined;
   BluetoothConnected: undefined;
   StartNavigation: undefined;
   NewLocation: undefined;
   SelectLocation: undefined;
   Started: undefined;
-
 };
 
 // Define types for each screen's navigation and route props
@@ -62,6 +63,9 @@ export type ForgotPasswordScreenProps = {
 export type ProfileScreenProps = {
   navigation: NativeStackNavigationProp<StackParamList, 'Profile'>;
 };
+export type AddProfileDetailsProps = {
+  navigation: NativeStackNavigationProp<StackParamList, 'AddProfileDetails'>;
+};
 
 export type HomeScreenProps = {
   navigation: NativeStackNavigationProp<StackParamList, 'Main'>;
@@ -77,6 +81,9 @@ export type AllowLocationProps = {
 
 export type MyProfileScreenProps = {
   navigation: NativeStackNavigationProp<StackParamList, 'MyProfile'>;
+};
+export type EditMyProfileScreenProps = {
+  navigation: NativeStackNavigationProp<StackParamList, 'EditMyProfile'>;
 };
 
 export type FavoritePlacesScreenProps = {
@@ -102,7 +109,6 @@ export type LanguageSupportScreenProps = {
 export type LogoutScreenProps = {
   navigation: NativeStackNavigationProp<StackParamList, 'Logout'>;
 };
-
 
 export type EnterLocationProps = {
   navigation: NativeStackNavigationProp<StackParamList, 'EnterLocation'>;

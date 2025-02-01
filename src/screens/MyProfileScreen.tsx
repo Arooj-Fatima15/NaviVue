@@ -1,14 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather'; // Import Feather icons
-import { MyProfileScreenProps } from "../../navigation/StackParamList";
+import {MyProfileScreenProps} from '../navigation/StackParamList';
 
 const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('SettingsScreen')} >
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Feather name="arrow-left" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Profile</Text>
@@ -17,8 +26,8 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
       {/* Profile Section */}
       <View style={styles.profileSection}>
         <Image
-          source={require("../../assets/profileImage.png")} // Replace with your image URL
-style={styles.profileImage}
+          source={require('../assets/profileImage.png')} // Replace with your image URL
+          style={styles.profileImage}
         />
         <View style={styles.profileTextContainer}>
           <Text style={styles.profileName}>Tristan Caine</Text>
@@ -30,9 +39,17 @@ style={styles.profileImage}
       <View style={styles.infoSection}>
         <InfoItem icon="mail" label="Email ID" value="ThePredator@gmail.com" />
         <InfoItem icon="user" label="Gender" value="Male" />
-        <InfoItem icon="calendar" label="Date of Birth" value="06 November, 1996 | 28 Years" />
+        <InfoItem
+          icon="calendar"
+          label="Date of Birth"
+          value="06 November, 1996 | 28 Years"
+        />
         <InfoItem icon="map-pin" label="Zip Code" value="57000" />
-        <InfoItem icon="home" label="Address" value="Cottage, Outfit Compound, Tenebrae..." />
+        <InfoItem
+          icon="home"
+          label="Address"
+          value="Cottage, Outfit Compound, Tenebrae..."
+        />
         <InfoItem
           icon="book" // Feather icon for Notes
           label="Notes"
@@ -44,7 +61,15 @@ style={styles.profileImage}
 };
 
 // Reusable Information Item Component
-const InfoItem = ({ icon, label, value }: { icon: string; label: string; value: string }) => (
+const InfoItem = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+}) => (
   <View style={styles.infoItem}>
     <Feather
       name={icon} // Using Feather icon name directly
