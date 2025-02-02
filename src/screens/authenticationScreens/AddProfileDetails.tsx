@@ -23,19 +23,20 @@ const AddProfileDetails: React.FC<AddProfileDetailsProps> = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [dob, setDob] = useState('');
-
   const [imageUri, setImageUri] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
 
   const [title, setTitle] = useState('');
-  const [surname, setSurname] = useState('Vick');
-  const [firstName, setFirstName] = useState('John');
-
   const [gender, setGender] = useState('');
   const [mobile, setMobile] = useState('44207334 3456');
   const [religion, setReligion] = useState('');
   const [maritalStatus, setMaritalStatus] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const [homePhone, setHomePhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [notes, setNotes] = useState('');
 
   const handleMobileChange = text => {
     const numericText = text.replace(/[^0-9]/g, '');
@@ -82,21 +83,28 @@ const AddProfileDetails: React.FC<AddProfileDetailsProps> = ({navigation}) => {
       const storagePath = `profileImages/${fileName}`;
       const reference = storage().ref(storagePath);
 
-      // ✅ Move Image to a Public Directory (Prevent Cache Issues)
+      // Move Image to a Public Directory (Prevent Cache Issues)
       const newPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
       await RNFS.copyFile(imageUri, newPath);
 
+      // Check if the file exists at the new location
+      const fileExists = await RNFS.exists(newPath);
+      if (!fileExists) {
+        throw new Error('File does not exist at the specified path.');
+      }
+
       console.log('New Image Path:', newPath);
 
-      // ✅ Upload the image from the new location
+      // Upload the image from the new location
       await reference.putFile(newPath);
       console.log('Upload successful!');
 
-      // ✅ Get download URL
+      // Get download URL
       const downloadURL = await reference.getDownloadURL();
       console.log('Download URL:', downloadURL);
 
-      // ✅ Save URL to Firestore
+      // Save URL to Firestore
+
       await firestore().collection('users').doc(userId).update({
         profileImage: downloadURL,
         updatedAt: firestore.FieldValue.serverTimestamp(),
@@ -115,15 +123,20 @@ const AddProfileDetails: React.FC<AddProfileDetailsProps> = ({navigation}) => {
   const handleSaveProfile = async () => {
     const userId = auth().currentUser.uid;
 
+    uploadImage();
+
     const profileData = {
       title,
-      firstName,
-      surname,
       dob,
       gender,
       mobile,
       religion,
       maritalStatus,
+      zipCode,
+      occupation,
+      homePhone,
+      address,
+      notes,
       profileImage: imageUrl, // Save Image URL
       updatedAt: firestore.FieldValue.serverTimestamp(),
     };
@@ -161,14 +174,13 @@ const AddProfileDetails: React.FC<AddProfileDetailsProps> = ({navigation}) => {
                 : require('../../assets/profileImage.png')
             }
             style={styles.profileImage}
-            onPress={selectImage}
           />
           <TouchableOpacity style={styles.editIcon}>
             <Feather
               name="upload"
               size={16}
               color="#fff"
-              onPress={uploadImage}
+              onPress={selectImage}
             />
           </TouchableOpacity>
         </TouchableOpacity>
@@ -231,6 +243,37 @@ const AddProfileDetails: React.FC<AddProfileDetailsProps> = ({navigation}) => {
           onChangeText={setMaritalStatus}
           placeholder="Select Status"
           dropdownOptions={['Single', 'Married']}
+        />
+
+        <CustomInput
+          label="Zip Code"
+          value={zipCode}
+          onChangeText={setZipCode}
+          keyboardType="numeric"
+        />
+        <CustomInput
+          label="Occupation"
+          value={occupation}
+          onChangeText={setOccupation}
+        />
+        <CustomInput
+          label="Home Phone"
+          value={homePhone}
+          onChangeText={setHomePhone}
+          keyboardType="phone-pad"
+        />
+        <CustomInput
+          label="Address"
+          value={address}
+          placeholder={'Enter Address'}
+          onChangeText={setAddress}
+          required
+        />
+        <CustomInput
+          label="Notes"
+          value={notes}
+          onChangeText={setNotes}
+          multiline
         />
       </View>
 
@@ -302,7 +345,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    marginRight: 10,
+    marginRight: 50,
   },
   header: {
     fontSize: 18,

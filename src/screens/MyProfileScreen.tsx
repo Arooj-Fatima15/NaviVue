@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,64 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather'; // Import Feather icons
+import Feather from 'react-native-vector-icons/Feather';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import {MyProfileScreenProps} from '../navigation/StackParamList';
 
 const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const user = auth().currentUser;
+        if (!user) {
+          Alert.alert('Error', 'User not authenticated.');
+          return;
+        }
+
+        const userDoc = await firestore()
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+        if (userDoc.exists) {
+          setProfile(userDoc.data());
+        } else {
+          Alert.alert('Error', 'User profile not found.');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        Alert.alert('Error', 'Failed to fetch profile.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2CBCEF" />
+      </View>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.errorText}>Failed to load profile.</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
@@ -26,24 +79,22 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
       {/* Profile Section */}
       <View style={styles.profileSection}>
         <Image
-          source={require('../assets/profileImage.png')} // Replace with your image URL
+          source={require('../assets/profileImage.png')}
           style={styles.profileImage}
         />
         <View style={styles.profileTextContainer}>
-          <Text style={styles.profileName}>Tristan Caine</Text>
-          <Text style={styles.profilePhone}>+92 333 1463875</Text>
+          <Text style={styles.profileName}>
+            {profile.firstName} {profile.lastName}
+          </Text>
+          <Text style={styles.profilePhone}>{profile.mobile}</Text>
         </View>
       </View>
 
       {/* Information Section */}
       <View style={styles.infoSection}>
-        <InfoItem icon="mail" label="Email ID" value="ThePredator@gmail.com" />
-        <InfoItem icon="user" label="Gender" value="Male" />
-        <InfoItem
-          icon="calendar"
-          label="Date of Birth"
-          value="06 November, 1996 | 28 Years"
-        />
+        <InfoItem icon="mail" label="Email ID" value={profile.email} />
+        <InfoItem icon="user" label="Gender" value={profile.gender} />
+        <InfoItem icon="calendar" label="Date of Birth" value={profile.dob} />
         <InfoItem icon="map-pin" label="Zip Code" value="57000" />
         <InfoItem
           icon="home"
@@ -51,9 +102,9 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
           value="Cottage, Outfit Compound, Tenebrae..."
         />
         <InfoItem
-          icon="book" // Feather icon for Notes
+          icon="book"
           label="Notes"
-          value="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+          value="Some personal notes here..."
         />
       </View>
     </ScrollView>
@@ -71,12 +122,7 @@ const InfoItem = ({
   value: string;
 }) => (
   <View style={styles.infoItem}>
-    <Feather
-      name={icon} // Using Feather icon name directly
-      size={24} // Size of the icon
-      color="#4F4F4F" // Icon color
-      style={styles.infoIcon}
-    />
+    <Feather name={icon} size={24} color="#4F4F4F" style={styles.infoIcon} />
     <View>
       <Text style={styles.infoLabel}>{label}</Text>
       <Text style={styles.infoValue}>{value}</Text>
@@ -93,7 +139,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginRight: 100,
     marginBottom: 30,
-    height: 80, // Adjust height to match the design
+    height: 80,
     backgroundColor: '#2CBCEF',
     borderBottomRightRadius: 35,
     borderTopRightRadius: 35,
@@ -104,7 +150,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 16,
-    top: 30, // Adjust for proper alignment
+    top: 30,
   },
   headerTitle: {
     color: '#4F4F4F',
@@ -114,13 +160,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   profileSection: {
-    flexDirection: 'row', // Aligns image and text horizontally
-    alignItems: 'center', // Centers vertically within the row
-    paddingHorizontal: 16, // Adds padding to the sides
-    marginTop: 0, // Adds top margin
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
   },
   profileTextContainer: {
-    marginLeft: 16, // Adds space between the image and text
+    marginLeft: 16,
   },
   profileImage: {
     width: 100,
@@ -152,12 +197,21 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    color: '#4F4F4F', // Updated color for the label
+    color: '#4F4F4F',
   },
   infoValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#AFAFAF', // Updated color for the value
+    color: '#AFAFAF',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
   },
 });
 

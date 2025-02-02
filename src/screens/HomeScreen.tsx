@@ -1,20 +1,45 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-
 import {HomeScreenProps} from '../navigation/StackParamList';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = auth().currentUser;
+      if (user) {
+        try {
+          const userDoc = await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .get();
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            setFirstName(userData.firstName || 'User');
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          Alert.alert('Error', 'Failed to load profile data.');
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
-      {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.menuButton}
@@ -23,7 +48,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      {/* Centered Logo */}
       <View style={styles.logoContainer}>
         <Image
           source={require('../assets/logo-main.png')}
@@ -31,7 +55,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         />
       </View>
 
-      {/* Welcome Section */}
       <Text style={styles.welcomeText}>Welcome to NaviVue</Text>
 
       <View style={styles.profileSection}>
@@ -39,9 +62,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           source={require('../assets/profileImage.png')}
           style={styles.profileImage}
         />
-
         <View>
-          <Text style={styles.greetingText}>Good Morning, Tristan!</Text>
+          <Text style={styles.greetingText}>Good Morning, {firstName}!</Text>
           <Text style={styles.subGreetingText}>How are you feeling today?</Text>
         </View>
       </View>

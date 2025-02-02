@@ -7,7 +7,6 @@ import Otp from './screens/authenticationScreens/Otp';
 import Onboarding from './screens/authenticationScreens/Onboarding';
 import ForgotPassword from './screens/authenticationScreens/ForgotPassword';
 import AddProfileDetails from './screens/authenticationScreens/AddProfileDetails';
-import Profile from './screens/authenticationScreens/ProfileInfo';
 import TabNavigator from './navigation/TabNavigator';
 import 'react-native-get-random-values';
 
@@ -26,7 +25,7 @@ function App(): React.JSX.Element {
         <Stack.Screen name="AddProfileDetails" component={AddProfileDetails} />
         <Stack.Screen name="Otp" component={Otp} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="Profile" component={Profile} />
+
         <Stack.Screen
           name="Main"
           component={TabNavigator}

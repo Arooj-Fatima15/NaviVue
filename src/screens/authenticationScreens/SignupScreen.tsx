@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // For check/cross icons
 import {SignupScreenProps} from '../../navigation/StackParamList';
 
 const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {

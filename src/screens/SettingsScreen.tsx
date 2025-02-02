@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,10 +7,39 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Import Ionicons
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SettingsScreenProps} from '../navigation/StackParamList';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  // Fetch user data from Firebase Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = auth().currentUser?.uid;
+      if (userId) {
+        try {
+          const userDoc = await firestore()
+            .collection('users')
+            .doc(userId)
+            .get();
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            setFirstName(userData?.firstName || ''); // Set first name from Firestore
+            setLastName(userData?.lastName || ''); // Set last name from Firestore
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
@@ -24,7 +53,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
           source={require('../assets/profileImage.png')} // Replace with your image URL
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>TRISTAN CAINE</Text>
+        <Text style={styles.profileName}>
+          {firstName} {lastName}
+        </Text>
       </View>
 
       {/* Options Section */}
@@ -69,7 +100,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   );
 };
 
-// Option Item Component
 // Option Item Component
 const OptionItem = ({
   icon,
@@ -134,19 +164,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 25,
     borderBottomWidth: 1,
-    borderBottomColor: '#E7EAEE', // Border color changed
-    justifyContent: 'space-between', // Align chevron to the right
+    borderBottomColor: '#E7EAEE',
+    justifyContent: 'space-between',
   },
   optionIcon: {
     marginRight: 16,
-    fontSize: 24, // Increase the font size to make the icon bigger
+    fontSize: 24,
   },
 
   optionText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#898989', // Link color changed
-    flex: 1, // Ensures that text takes the available space
+    color: '#898989',
+    flex: 1,
   },
 });
 
