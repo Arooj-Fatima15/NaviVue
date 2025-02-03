@@ -93,7 +93,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
         <OptionItem
           icon="log-out-outline"
           title="Logout"
-          onPress={() => navigation.navigate('Logout')}
+          onPress={() => navigation.navigate('Onboarding')}
         />
       </View>
     </ScrollView>

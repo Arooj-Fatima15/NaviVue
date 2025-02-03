@@ -171,10 +171,9 @@ const SignupScreen: React.FC<SignupScreenProps> = ({navigation}) => {
             Sign In
           </Text>
         </Text>
-
-        <Text onPress={() => navigation.navigate('AddProfileDetails')}>
+        {/* <Text onPress={() => navigation.navigate('AddProfileDetails')}>
           Go to Add Information
-        </Text>
+        </Text>*/}
       </View>
     </View>
   );
