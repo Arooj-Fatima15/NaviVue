@@ -11,14 +11,14 @@ import {
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackParamList} from '../../navigation/StackParamList';
 
-const WelcomeScreen: React.FC<{navigation: NativeStackNavigationProp<StackParamList>}> = ({navigation}) => {
+const WelcomeScreen: React.FC<{
+  navigation: NativeStackNavigationProp<StackParamList>;
+}> = ({navigation}) => {
   return (
     <ImageBackground
-    source={require('../../assets/onboarding-bg.jpg')}
-
+      source={require('../../assets/onboarding-bg.jpg')}
       style={styles.backgroundImage}
-      resizeMode="cover"
-    >
+      resizeMode="cover">
       <View style={styles.container}>
         <View style={styles.content}>
           <Image
@@ -27,13 +27,11 @@ const WelcomeScreen: React.FC<{navigation: NativeStackNavigationProp<StackParamL
               uri: 'https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/offlkfudir9-353%3A314?alt=media&token=007144ad-f515-4a63-a666-18913914745f',
             }}
           />
-           <Text style={styles.title}>Welcome to NaviVue</Text>
+          <Text style={styles.title}>Welcome to NaviVue</Text>
           <Text style={styles.subtitle}>
             Discover the next generation of navigation solutions, designed for
             your independence.
           </Text>
-          
-         
         </View>
         <TouchableOpacity
           style={styles.getStartedButton}
@@ -42,9 +40,7 @@ const WelcomeScreen: React.FC<{navigation: NativeStackNavigationProp<StackParamL
           <Text style={styles.getStartedText}>Get Started</Text>
         </TouchableOpacity>
 
-
-{/* Login Navigation */}
-<Text style={styles.loginPrompt}>
+        {/*  <Text style={styles.loginPrompt}>
           Shortcut to move to Screen{" "}
           <Text
             style={styles.loginLink}
@@ -52,8 +48,7 @@ const WelcomeScreen: React.FC<{navigation: NativeStackNavigationProp<StackParamL
           >
             Home Screen
           </Text>
-          </Text>
-
+          </Text> */}
       </View>
     </ImageBackground>
   );
@@ -85,12 +80,12 @@ const styles = StyleSheet.create({
 
   loginPrompt: {
     fontSize: 11,
-    color: "#999cae",
+    color: '#999cae',
     marginTop: 20,
   },
   loginLink: {
-    color: "rgba(2,56,128,1)",
-    fontWeight: "700",
+    color: 'rgba(2,56,128,1)',
+    fontWeight: '700',
   },
   subtitle: {
     color: '#E4E5E6',

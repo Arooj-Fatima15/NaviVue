@@ -1,75 +1,57 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native'; // Import Image component from React Native
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Import MaterialCommunityIcons
 
 import HomeStackNavigator from './HomeStackNavigator';
-import SettingsScreen from '../screens/SettingsScreen';
 import SettingStackNavigator from './SettingStackNavigator';
-
-// Import PNG images from the assets folder
-
 
 const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
   return (
     <Tab.Navigator
-    
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
 
-       
-
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconSource;
-
-          // Set the correct PNG icon based on the route
           if (route.name === 'Home') {
-            iconSource = require('../assets/icons/homeIcon.png');
-          } else if (route.name === 'Profile') {
-            iconSource = require('../assets/icons/profileIcon.png');
-          } else {
-            iconSource =  require('../assets/icons/homeIcon.png'); // Default fallback icon
+            iconName = focused ? 'home' : 'home-outline'; // Filled Home Icon
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'cog' : 'cog-outline'; // Filled Settings (Cog) Icon
           }
 
-          // Return the Image component with the source and styles applied
           return (
-            <Image
-              source={iconSource}
-              style={{
-                width: size,
-                height: size,
-                tintColor: focused ? '#004F6B' : 'gray', // Change color based on focus state
-              }}
+            <MaterialCommunityIcons
+              name={iconName}
+              size={size}
+              color={focused ? '#004F6B' : 'gray'}
             />
           );
         },
 
         tabBarLabelStyle: {
-          fontSize: 12, // Adjust this value to change the text size
-          fontWeight: 'bold', // Optional: Customize the font weight
+          fontSize: 12,
+          fontWeight: 'bold',
         },
-        tabBarActiveTintColor: '#004F6B', // Navy Blue when active
-        tabBarInactiveTintColor: 'gray', // Gray when inactive
-        
+        tabBarActiveTintColor: '#004F6B',
+        tabBarInactiveTintColor: 'gray',
 
         tabBarStyle: {
-          paddingBottom: 10, // Padding at the bottom of the tab bar
-          paddingTop: 10, // Padding at the top of the tab bar
-          height: 70, // Adjust the height to accommodate the padding
-
+          paddingBottom: 10,
+          paddingTop: 10,
+          height: 70,
         },
-      })}
-    >
+      })}>
       <Tab.Screen
         name="Home"
         component={HomeStackNavigator}
-        options={{ headerShown: false }} // Hides the header for the Home screen
+        options={{headerShown: false}}
       />
-      
+
       <Tab.Screen
-        name="Profile"
+        name="Settings"
         component={SettingStackNavigator}
-        options={{ headerShown: false }} // Hides the header for the Settings screen
+        options={{headerShown: false}}
       />
     </Tab.Navigator>
   );

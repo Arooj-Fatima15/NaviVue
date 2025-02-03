@@ -6,13 +6,11 @@ import SignupScreen from './screens/authenticationScreens/SignupScreen';
 import Otp from './screens/authenticationScreens/Otp';
 import Onboarding from './screens/authenticationScreens/Onboarding';
 import ForgotPassword from './screens/authenticationScreens/ForgotPassword';
-import Profile from './screens/authenticationScreens/ProfileInfo';
+import AddProfileDetails from './screens/authenticationScreens/AddProfileDetails';
 import TabNavigator from './navigation/TabNavigator';
 import 'react-native-get-random-values';
 
 const Stack = createNativeStackNavigator();
-
-
 
 function App(): React.JSX.Element {
   return (
@@ -24,9 +22,10 @@ function App(): React.JSX.Element {
         <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="AddProfileDetails" component={AddProfileDetails} />
         <Stack.Screen name="Otp" component={Otp} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="Profile" component={Profile} />
+
         <Stack.Screen
           name="Main"
           component={TabNavigator}
