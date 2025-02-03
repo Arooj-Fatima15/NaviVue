@@ -121,33 +121,45 @@ const AddProfileDetails: React.FC<AddProfileDetailsProps> = ({navigation}) => {
   };
 
   const handleSaveProfile = async () => {
-    const userId = auth().currentUser.uid;
+    if (!title || !dob || !mobile || !address) {
+      Alert.alert('Error', 'Please fill in all required fields.');
+      return;
+    }
 
-    uploadImage();
+    const userId = auth().currentUser?.uid;
+    if (!userId) {
+      Alert.alert('Error', 'User not authenticated.');
+      return;
+    }
 
-    const profileData = {
-      title,
-      dob,
-      gender,
-      mobile,
-      religion,
-      maritalStatus,
-      zipCode,
-      occupation,
-      homePhone,
-      address,
-      notes,
-      profileImage: imageUrl, // Save Image URL
-      updatedAt: firestore.FieldValue.serverTimestamp(),
-    };
+    setUploading(true);
 
     try {
+      await uploadImage(); // Ensure image uploads first before updating profile data
+
+      const profileData = {
+        title,
+        dob,
+        gender,
+        mobile,
+        religion,
+        maritalStatus,
+        occupation,
+        homePhone,
+        address,
+        notes,
+        profileImage: imageUrl,
+        updatedAt: firestore.FieldValue.serverTimestamp(),
+      };
+
       await firestore().collection('users').doc(userId).update(profileData);
       Alert.alert('Success', 'Profile updated successfully!');
       navigation.navigate('Main');
     } catch (error) {
       console.error('Error updating profile:', error);
       Alert.alert('Error', 'Failed to update profile.');
+    } finally {
+      setUploading(false);
     }
   };
 

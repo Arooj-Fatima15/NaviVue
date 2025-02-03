@@ -66,7 +66,6 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -76,7 +75,6 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
         <Text style={styles.headerTitle}>My Profile</Text>
       </View>
 
-      {/* Profile Section */}
       <View style={styles.profileSection}>
         <Image
           source={require('../assets/profileImage.png')}
@@ -90,28 +88,36 @@ const MyProfileScreen: React.FC<MyProfileScreenProps> = ({navigation}) => {
         </View>
       </View>
 
-      {/* Information Section */}
       <View style={styles.infoSection}>
         <InfoItem icon="mail" label="Email ID" value={profile.email} />
         <InfoItem icon="user" label="Gender" value={profile.gender} />
         <InfoItem icon="calendar" label="Date of Birth" value={profile.dob} />
-        <InfoItem icon="map-pin" label="Zip Code" value="57000" />
+        <InfoItem
+          icon="map-pin"
+          label="Zip Code"
+          value={profile.zipCode || 'N/A'}
+        />
+        <InfoItem
+          icon="briefcase"
+          label="Occupation"
+          value={profile.occupation || 'N/A'}
+        />
+        <InfoItem
+          icon="phone"
+          label="Home Phone"
+          value={profile.homePhone || 'N/A'}
+        />
         <InfoItem
           icon="home"
           label="Address"
-          value="Cottage, Outfit Compound, Tenebrae..."
+          value={profile.address || 'N/A'}
         />
-        <InfoItem
-          icon="book"
-          label="Notes"
-          value="Some personal notes here..."
-        />
+        <InfoItem icon="book" label="Notes" value={profile.notes || 'N/A'} />
       </View>
     </ScrollView>
   );
 };
 
-// Reusable Information Item Component
 const InfoItem = ({
   icon,
   label,
